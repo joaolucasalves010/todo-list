@@ -55,3 +55,14 @@ todoForm.addEventListener("submit", (e) => {
     saveTodo(inputValue)
   }
 })
+
+document.addEventListener("click", (e) => {
+  const targetEl = e.target // recebe elemento a qual nos clicarmos
+  const parentEl = targetEl.closest("div") // recebe a div mais proxima do elemento
+
+  if (targetEl.classList.contains("finish-todo")) {
+    parentEl.classList.add("done") // adiciona a classe done para o elemento
+  } else if (targetEl.classList.contains("remove-todo")) {
+    parentEl.remove() // remove elemento pai e seus filho
+  }
+})

@@ -6,6 +6,8 @@ const editForm = document.querySelector("#edit-form")
 const editInput = document.querySelector("#edit-input")
 const cancelEditBtn = document.querySelector("#cancel-edit-btn")
 
+let oldInputValue
+
 // funções
 function verifyValue(value) {
   if (!value) return // se não tiver nenhum valor o evento n executa
@@ -44,6 +46,24 @@ function saveTodo(text) {
   todoInput.focus()
 }
 
+function toggleForms() {
+  editForm.classList.toggle("hide")
+  todoForm.classList.toggle("hide")
+  todoList.classList.toggle("hide")
+}
+
+function updateTodo(text) {
+  const todos = document.querySelectorAll(".todo")
+
+  todos.forEach((todo) => {
+    let todoTitle = todo.querySelector("h3")
+
+    if (todoTitle.innerText === oldInputValue) {
+      todoTitle.innerText = text
+    }
+  })
+}
+
 // eventos
 todoForm.addEventListener("submit", (e) => {
   e.preventDefault()
@@ -59,10 +79,39 @@ todoForm.addEventListener("submit", (e) => {
 document.addEventListener("click", (e) => {
   const targetEl = e.target // recebe elemento a qual nos clicarmos
   const parentEl = targetEl.closest("div") // recebe a div mais proxima do elemento
+  let todoTitle
 
+  if (parentEl && parentEl.querySelector("h3")) {
+    todoTitle = parentEl.querySelector("h3").innerText
+  }
   if (targetEl.classList.contains("finish-todo")) {
     parentEl.classList.add("done") // adiciona a classe done para o elemento
-  } else if (targetEl.classList.contains("remove-todo")) {
+  }
+  if (targetEl.classList.contains("remove-todo")) {
     parentEl.remove() // remove elemento pai e seus filho
   }
+  if (targetEl.classList.contains("edit-todo")) {
+    toggleForms()
+
+    editInput.value = todoTitle
+    oldInputValue = todoTitle
+  }
+})
+
+cancelEditBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+
+  toggleForms()
+})
+
+editForm.addEventListener("submit", (e) => {
+  e.preventDefault()
+
+  const editInputValue = editInput.value
+
+  if (editInputValue) {
+    updateTodo(editInputValue)
+  }
+
+  toggleForms()
 })

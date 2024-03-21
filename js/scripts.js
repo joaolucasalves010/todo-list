@@ -19,7 +19,7 @@ function verifyValue(value) {
   }
 }
 
-function saveTodo(text) {
+function saveTodo(text, done = 0, save = 1) {
   const todo = document.createElement("div")
   todo.classList.add("todo")
 
@@ -38,6 +38,15 @@ function saveTodo(text) {
   const removeBtn = document.createElement("button")
   removeBtn.classList.add("remove-todo")
   removeBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`
+
+  // utilizando dados da localStorage
+  if (done) {
+    todo.classList.add("done")
+  }
+
+  if (save) {
+    saveTodoLocalStorage({ text, done })
+  }
 
   todo.appendChild(todoTitle)
   todo.appendChild(doneBtn)
@@ -117,6 +126,17 @@ todoForm.addEventListener("submit", (e) => {
   }
 })
 
+todoForm.addEventListener("keyup", (e) => {
+  e.preventDefault()
+
+  const inputValue = verifyValue(todoInput.value) // verificar se tem algo no input
+
+  if (inputValue && e.key === "Enter") {
+    //save todo
+    saveTodo(inputValue)
+  }
+})
+
 document.addEventListener("click", (e) => {
   const targetEl = e.target // recebe elemento a qual nos clicarmos
   const parentEl = targetEl.closest("div") // recebe a div mais proxima do elemento
@@ -180,3 +200,18 @@ filterBtn.addEventListener("click", (e) => {
 
   filterTodoTask(filterTodo)
 })
+
+// local storage
+const getTodosLocalStorage = () => {
+  const todos = JSON.parse(localStorage.getItem("todos")) || []
+
+  return todos
+}
+
+const saveTodoLocalStorage = (todo) => {
+  const todos = getTodosLocalStorage() // todos os todos da ls se n tiver nada retorna um arr vazio
+
+  todos.push(todo) /// adiocionar novo todo no arr
+
+  localStorage.setItem("todos", JSON.stringify(todos)) // salvar na tudo na ls
+}

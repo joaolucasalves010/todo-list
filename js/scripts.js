@@ -83,6 +83,28 @@ function getSearchTodos(text) {
   })
 }
 
+function filterTodoTask(task) {
+  const todos = document.querySelectorAll(".todo")
+
+  if (task === "all") {
+    todos.forEach((todo) => {
+      todo.style.display = "flex"
+    })
+  } else if (task === "done") {
+    todos.forEach((todo) => {
+      todo.classList.contains("done")
+        ? (todo.style.display = "flex")
+        : (todo.style.display = "none")
+    })
+  } else {
+    todos.forEach((todo) => {
+      todo.classList.contains("done")
+        ? (todo.style.display = "none")
+        : (todo.style.display = "flex")
+    })
+  }
+}
+
 // eventos
 todoForm.addEventListener("submit", (e) => {
   e.preventDefault()
@@ -149,4 +171,12 @@ eraseBtn.addEventListener("click", (e) => {
   searchInput.value = ""
 
   searchInput.dispatchEvent(new Event("keyup"))
+})
+
+filterBtn.addEventListener("click", (e) => {
+  const filterTodo = e.target.value
+
+  console.log(filterTodo)
+
+  filterTodoTask(filterTodo)
 })

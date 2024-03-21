@@ -72,6 +72,8 @@ function updateTodo(text) {
 
     if (todoTitle.innerText === oldInputValue) {
       todoTitle.innerText = text
+
+      updateTodoStatusLocalStorage(oldInputValue, text)
     }
   })
 }
@@ -114,6 +116,14 @@ function filterTodoTask(task) {
   }
 }
 
+function loadTodos() {
+  const todos = getTodosLocalStorage()
+
+  todos.forEach((todo) => {
+    saveTodo(todo.text, todo.done, 0)
+  })
+}
+
 // eventos
 todoForm.addEventListener("submit", (e) => {
   e.preventDefault()
@@ -147,9 +157,13 @@ document.addEventListener("click", (e) => {
   }
   if (targetEl.classList.contains("finish-todo")) {
     parentEl.classList.add("done") // adiciona a classe done para o elemento
+
+    updateTodoStatusLocalStorage(todoTitle)
   }
   if (targetEl.classList.contains("remove-todo")) {
     parentEl.remove() // remove elemento pai e seus filho
+
+    removeTodoLocalStorage(todoTitle)
   }
   if (targetEl.classList.contains("edit-todo")) {
     toggleForms()
@@ -215,3 +229,33 @@ const saveTodoLocalStorage = (todo) => {
 
   localStorage.setItem("todos", JSON.stringify(todos)) // salvar na tudo na ls
 }
+
+const removeTodoLocalStorage = (todoText) => {
+  const todos = getTodosLocalStorage()
+
+  const filteredTodos = todos.filter((todo) => todo.text !== todoText)
+
+  localStorage.setItem("todos", JSON.stringify(filteredTodos))
+}
+
+const updateTodoStatusLocalStorage = (todoText) => {
+  const todos = getTodosLocalStorage()
+
+  todos.map((todo) =>
+    todo.text === todoText ? (todo.done = !todo.done) : null
+  )
+
+  localStorage.setItem("todos", JSON.stringify(todos))
+}
+
+const uptadeTodoLocalStorage = (todoText, todoNewText) => {
+  const todos = getTodosLocalStorage()
+
+  todos.nap((todo) => {
+    todo.text === todoText ? (todo.text = todoNewText) : null
+  })
+
+  localStorage.setItem("todos", JSON.stringify(todos))
+}
+
+loadTodos()
